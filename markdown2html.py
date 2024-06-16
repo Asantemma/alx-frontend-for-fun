@@ -28,14 +28,12 @@ if __name__ == '__main__':
                 current_line = current_line.replace('__', '<em>', 1)
                 current_line = current_line.replace('__', '</em>', 1)
 
-                # md5
                 md5_matches = re.findall(r'\[\[.+?\]\]', current_line)
                 md5_content = re.findall(r'\[\[(.+?)\]\]', current_line)
                 if md5_matches:
                     current_line = current_line.replace(
                         md5_matches[0], hashlib.md5(md5_content[0].encode()).hexdigest())
 
-                # remove the letter C
                 c_matches = re.findall(r'\(\(.+?\)\)', current_line)
                 c_content = re.findall(r'\(\((.+?)\)\)', current_line)
                 if c_matches:
@@ -51,7 +49,7 @@ if __name__ == '__main__':
                 ul_level = line_length - len(ul_content)
                 ol_content = current_line.lstrip('*')
                 ol_level = line_length - len(ol_content)
-                # headings, lists
+
                 if 1 <= heading_level <= 6:
                     current_line = '<h{}>'.format(
                         heading_level) + heading_content.strip()
