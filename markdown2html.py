@@ -1,18 +1,10 @@
 #!/usr/bin/env python3
 
-"""
-Converts a markdown text to html.
-"""
 import sys
 import os
 import re
 import hashlib
 
-def md5_hash(text):
-    return hashlib.md5(text.encode()).hexdigest()
-
-def remove_c_case_insensitive(text):
-    return re.sub(r'[cC]', '', text)
 
 def convert_markdown_to_html(markdown_text):
     html_lines = []
@@ -23,10 +15,22 @@ def convert_markdown_to_html(markdown_text):
     paragraph_lines = []
 
     for line in lines:
-        line = re.sub(r'\*\*(.*?)\*\*', r'<b>\1</b>', line)  # Convert bold syntax
-        line = re.sub(r'__(.*?)__', r'<em>\1</em>', line)     # Convert italic syntax
-        line = re.sub(r'\[\[(.*?)\]\]', lambda match: md5_hash(match.group(1)), line)  # Convert [[text]] to MD5 hash
-        line = re.sub(r'\(\((.*?)\)\)', lambda match: remove_c_case_insensitive(match.group(1)), line)  # Remove all 'c' (case insensitive) from ((text))
+        # Convert **text** to <b>text</b>
+        line = re.sub(r'\*\*(.*?)\*\*', r'<b>\1</b>', line)
+        # Convert __text__ to <em>text</em>
+        line = re.sub(r'__(.*?)__', r'<em>\1</em>', line)
+        # Convert [[text]] to MD5 hash
+        line = re.sub(
+            r'\[\[(.*?)\]\]',
+            lambda m: hashlib.md5(m.group(1).encode()).hexdigest(),
+            line
+        )
+        # Convert ((text)) by removing all 'c' and 'C'
+        line = re.sub(
+            r'\(\((.*?)\)\)',
+            lambda m: m.group(1).replace('c', '').replace('C', ''),
+            line
+        )
 
         if line.startswith('#'):
             if in_unordered_list:
@@ -36,13 +40,17 @@ def convert_markdown_to_html(markdown_text):
                 html_lines.append('</ol>')
                 in_ordered_list = False
             if in_paragraph:
-                html_lines.append('<br />\n    '.join(paragraph_lines) + '\n</p>')
+                html_lines.append(
+                    '<br />\n    '.join(paragraph_lines) + '\n</p>'
+                )
                 in_paragraph = False
                 paragraph_lines = []
-            heading_level = len(line.split(' ')[0])  # Number of '#' characters
-            heading_text = line[heading_level:].strip()  # Text after the heading markers
+            heading_level = len(line.split(' ')[0])
+            heading_text = line[heading_level:].strip()
             if 1 <= heading_level <= 6:
-                html_lines.append(f'<h{heading_level}>{heading_text}</h{heading_level}>')
+                html_lines.append(
+                    f'<h{heading_level}>{heading_text}</h{heading_level}>'
+                )
             else:
                 html_lines.append(line)
         elif line.startswith('- '):
@@ -50,7 +58,9 @@ def convert_markdown_to_html(markdown_text):
                 html_lines.append('</ol>')
                 in_ordered_list = False
             if in_paragraph:
-                html_lines.append('<br />\n    '.join(paragraph_lines) + '\n</p>')
+                html_lines.append(
+                    '<br />\n    '.join(paragraph_lines) + '\n</p>'
+                )
                 in_paragraph = False
                 paragraph_lines = []
             if not in_unordered_list:
@@ -63,7 +73,9 @@ def convert_markdown_to_html(markdown_text):
                 html_lines.append('</ul>')
                 in_unordered_list = False
             if in_paragraph:
-                html_lines.append('<br />\n    '.join(paragraph_lines) + '\n</p>')
+                html_lines.append(
+                    '<br />\n    '.join(paragraph_lines) + '\n</p>'
+                )
                 in_paragraph = False
                 paragraph_lines = []
             if not in_ordered_list:
@@ -73,7 +85,9 @@ def convert_markdown_to_html(markdown_text):
             html_lines.append(f'    <li>{list_item}</li>')
         elif line.strip() == '':
             if in_paragraph:
-                html_lines.append('<br />\n    '.join(paragraph_lines) + '\n</p>')
+                html_lines.append(
+                    '<br />\n    '.join(paragraph_lines) + '\n</p>'
+                )
                 in_paragraph = False
                 paragraph_lines = []
             if in_unordered_list:
@@ -105,16 +119,18 @@ def convert_markdown_to_html(markdown_text):
 
     return '\n'.join(html_lines)
 
+
 def main():
-    # Check if the number of arguments is less than 2
     if len(sys.argv) < 3:
-        print("Usage: ./markdown2html.py README.md README.html", file=sys.stderr)
+        print(
+            "Usage: ./markdown2html.py README.md README.html",
+            file=sys.stderr
+        )
         sys.exit(1)
 
     markdown_file = sys.argv[1]
     html_file = sys.argv[2]
 
-    # Checks if the Markdown file exists
     if not os.path.exists(markdown_file):
         print(f"Missing {markdown_file}", file=sys.stderr)
         sys.exit(1)
@@ -126,10 +142,8 @@ def main():
         print(f"Error reading {markdown_file}: {e}", file=sys.stderr)
         sys.exit(1)
 
-    # Converts Markdown to HTML
     html_content = convert_markdown_to_html(md_content)
 
-    # Write the HTML content to the output file
     try:
         with open(html_file, 'w', encoding='utf-8') as f:
             f.write(html_content)
@@ -138,6 +152,7 @@ def main():
         sys.exit(1)
 
     sys.exit(0)
+
 
 if __name__ == "__main__":
     main()
