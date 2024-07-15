@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Concepts Example</title>
+    <style>
+        /* CSS Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* CSS Variables */
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2ecc71;
+        }
+
+        /* Selectors, Properties, and Values */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            color: var(--primary-color);
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2em;
+            color: var(--secondary-color);
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .box {
+            padding: 20px;
+            border: 1px solid var(--primary-color);
+            background-color: #fff;
+            text-align: center;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        /* Pseudo-classes and Pseudo-elements */
+        .box:hover {
+            background-color: var(--secondary-color);
+            color: #fff;
+            transform: scale(1.1);
+        }
+
+        .box::before {
+            content: 'Box';
+            display: block;
+            font-size: 0.8em;
+            font-style: italic;
+            color: #888;
+        }
+
+        /* Gradients */
+        .gradient {
+            background: linear-gradient(to right, #ff8a00, #da1b60);
+            color: #fff;
+            padding: 10px;
+            margin-top: 20px;
+        }
+
+        /* Animation */
+        @keyframes rotateAnimation {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .rotate {
+            animation: rotateAnimation 2s linear infinite;
+        }
+
+        /* Transform 2D and 3D */
+        .transform-2d {
+            transform: rotate(45deg);
+        }
+
+        .transform-3d {
+            transform: rotateX(45deg) rotateY(45deg);
+        }
+
+        /* Vendor Prefixes */
+        .prefix-example {
+            -webkit-transform: scale(1.2); /* Chrome, Safari, Opera */
+            -moz-transform: scale(1.2); /* Firefox */
+            -ms-transform: scale(1.2); /* IE */
+            -o-transform: scale(1.2); /* Opera */
+            transform: scale(1.2);
+        }
+    </style>
+</head>
+<body>
+    <h1>CSS Concepts Example</h1>
+
+    <!-- Grid System -->
+    <div class="container">
+        <div class="box">Box 1</div>
+        <div class="box">Box 2</div>
+    </div>
+
+    <!-- Background Gradient -->
+    <div class="gradient">Gradient Background</div>
+
+    <!-- Animation -->
+    <div class="box rotate">Animated Box</div>
+
+    <!-- Transform 2D -->
+    <div class="box transform-2d">Transform 2D</div>
+
+    <!-- Transform 3D -->
+    <div class="box transform-3d">Transform 3D</div>
+
+    <!-- Vendor Prefixes -->
+    <div class="box prefix-example">Vendor Prefix Example</div>
+</body>
+</html>
