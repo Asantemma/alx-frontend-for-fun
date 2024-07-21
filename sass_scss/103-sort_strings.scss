@@ -1,5 +1,4 @@
-/* Prints the sorted list in the debug output */
-
 @import '103-sort_list';
+/* Prints the sorted list in the debug output */
 $list_sorted: sort($list_to_sort);
 @debug $list_sorted;
